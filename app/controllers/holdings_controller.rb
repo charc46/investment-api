@@ -37,8 +37,12 @@ class HoldingsController < ApplicationController
   def stock_holding
     # Logic for data on all individual stock holdings and total holdings for individual stock
     holding = @holdings.where(ticker: params[:ticker])
+    total_units = holding.sum( &:units )
+    total_cost = holding.sum{ |h| h.price * h.units }.truncate(2)
     render json: {
-      stockHoldings: holding
+      stockHoldings: holding,
+      totalUnits: total_units,
+      totalCost: total_cost
     }
   end
 
