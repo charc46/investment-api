@@ -4,17 +4,15 @@ class HoldingsController < ApplicationController
   def create 
     # Create new holding
     holding = Holding.new(holding_params)
+    holding.user_id = @current_user.id
     if holding.save 
-      holding.user_id = @current_user.id
       render json: {
-        status: :created,
         message: 'Holding created'
-      }
+      }, status: :created
     else
       render json: {
-        status: :unprocessable_entity,
-        error: 'Oops, something went wrong.'
-      }
+        errors: holding.errors.full_messages
+      }, status: :unprocessable_entity
     end
   end
 
@@ -61,6 +59,6 @@ class HoldingsController < ApplicationController
   end
 
   def holding_params 
-    params.require(:holding).permit(:name, :ticker, :units, :price, :date, :user_id)
+    params.require(:holding).permit(:name, :ticker, :units, :price, :date)
   end
 end
