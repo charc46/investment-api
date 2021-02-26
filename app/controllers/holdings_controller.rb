@@ -1,4 +1,6 @@
 class HoldingsController < ApplicationController
+  before_action :set_holdings
+
   def create 
     # Create new holding
     holding = Holding.new(holding_params)
@@ -22,9 +24,9 @@ class HoldingsController < ApplicationController
 
   def all_holdings
     # Logic for displaying all of a users holdings
-    holdings = Holding.where(user_id: @current_user.id)
+    # holdings = Holding.where(user_id: @current_user.id)
     render json: {
-      allHoldings: holdings
+      allHoldings: @holdings
     }
   end
 
@@ -34,6 +36,10 @@ class HoldingsController < ApplicationController
 
   def stock_holding
     # Logic for data on all individual stock holdings and total holdings for individual stock
+    holding = @holdings.where(ticker: params[:ticker])
+    render json: {
+      stockHoldings: holding
+    }
   end
 
   def top_markets
@@ -45,6 +51,10 @@ class HoldingsController < ApplicationController
   end
 
   private
+
+  def set_holdings 
+    @holdings = Holding.where(user_id: @current_user.id)
+  end
 
   def holding_params 
     params.require(:holding).permit(:name, :ticker, :units, :price, :date, :user_id)

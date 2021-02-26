@@ -7,4 +7,5 @@ Rails.application.routes.draw do
 
   resources :holdings, only: [:create, :destroy]
   get '/holdings', to: 'holdings#all_holdings'
+  get '/stock/:ticker', to: 'holdings#stock_holding'
 end
